@@ -5,7 +5,7 @@ from tkinter.messagebox import *
 import pickle
 
 saving_picture ={}
-collection = {}
+
 
 class MainWidget():
     def __init__(self, parent = None):
@@ -24,6 +24,8 @@ class MainWidget():
 
         for i in range(len(button)):
             button[i].pack(in_ = form1, side = 'top', padx = 30, pady = 5)
+
+        self.collection = {}
 
 
 
@@ -85,7 +87,7 @@ class MainWidget():
         saving_picture['matherials'] = picture.matherials.__dict__
         saving_picture['author'] = picture.author.__dict__
         # saving['pictures']['pic'] = self.collection.pictures.pic
-        collection[saving_picture['name']] = saving_picture
+        self.collection[saving_picture['name']] = saving_picture
         showinfo("Добавление", "Успешно!")
 
 
@@ -138,6 +140,7 @@ class MainWidget():
 
 
     def find_picture(self,array,toplevel):
+        print(self.collection)
         picture = Picture( array[0].get(),
                            Author( array[3].get(), array[4].get(), array[5].get() ),
                            array[1].get(),
@@ -150,7 +153,7 @@ class MainWidget():
         find['matherials'] = picture.matherials.__dict__
         find['author'] = picture.author.__dict__
         found = {}
-        for k,v in collection.items():
+        for k,v in self.collection.items():
             found[k] = 0
             for k1,v1 in v.items():
                 if type( v1 ) is dict:
@@ -164,7 +167,7 @@ class MainWidget():
         answer = {}
         for k,v in found.items():
             if v == max(found.values()):
-                answer = collection[k]
+                answer = self.collection[k]
 
         if max(found.values())== 0:
             showinfo( "Поиск", "Совпадений не найдено!" )
@@ -177,14 +180,15 @@ class MainWidget():
 
     def save_collection(self):
         f1 = open( 'temp', 'wb' )
-        pickle.dump( collection, f1 )
+        pickle.dump( self.collection, f1 )
         f1.close()
 
 
     def open_collection(self):
         f1 = open( 'temp', 'rb' )
-        collection = pickle.load( f1 )
+        self.collection = pickle.load( f1 )
         f1.close()
+        print(self.collection)
 
 
 if __name__ == "__main__":
