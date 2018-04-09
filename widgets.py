@@ -1,5 +1,5 @@
 import tkinter as interface
-
+var3=""
 
 class ThemedButton(interface.Button):
     def __init__(self, parent = None, **configs):
@@ -18,6 +18,14 @@ class Navs(interface.Frame):
         interface.Frame.__init__(self, parent, **configs)
         self.pack(side = "left")
         self.config( bg = 'white', padx = 0, pady = 30)
+
+
+class Navs1( interface.Frame ):
+    def __init__(self, parent=None, **configs):
+        interface.Frame.__init__( self, parent, **configs )
+        self.pack( side="top" )
+        self.config( bg='white', padx=30, pady=30 )
+
 
 class Container(interface.Frame):
     def __init__(self, parent = None, **configs):
@@ -49,3 +57,41 @@ class CommandButton(interface.Button):
         self.pack()
         self.config(fg = 'black', bg = '#dce6f7', font = 'Times 12', width = 10,  relief = 'solid', justify = 'center', bd = 1, highlightcolor="#37d3ff",
                       highlightbackground="#37d3ff")
+
+class ScrolledList(interface.Frame):
+    def __init__(self, options, parent = None):
+        interface.Frame.__init__(self, parent)
+        self.pack()
+        self.config(bd = 1, width = 15, height = 15)
+        self.makeWidgets(options)
+
+    def handleList(self,event):
+        self.index = self.listbox.curselection()
+        self.label = self.listbox.get(self.index)
+        self.runCommand(self.label)
+
+
+    def makeWidgets(self, options):
+        sbar = interface.Scrollbar(self)
+        list = interface.Listbox(self, relief = 'solid', bd = 1, font = 'verdana 12')
+        sbar.config(command = list.yview)
+        list.config(yscrollcommand = sbar.set)
+        sbar.pack(side='right', fill = 'y')
+        list.pack(side = 'left', expand = True, fill = 'both')
+        pos = 0
+        for label in options:
+            list.insert(pos,label)
+            pos += 1
+        list.config(selectmode = 'single')
+        list.bind('<Double-1>', self.handleList)
+        self.listbox = list
+
+    def runCommand(self,selection):
+        var3 = selection
+
+
+class ThemedOut(interface.Message):
+    def __init__(self, parent = None, **configs):
+        interface.Message.__init__(self, parent, **configs)
+        self.pack(expand = True, fill = 'both')
+        self.config(bd = 1, fg='black', bg = 'white', font = 'verdana 13', relief='solid', justify = 'center')

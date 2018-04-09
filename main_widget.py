@@ -7,6 +7,8 @@ import pickle
 saving_picture ={}
 
 
+
+
 class MainWidget():
     def __init__(self, parent = None):
         button = []
@@ -94,7 +96,78 @@ class MainWidget():
 
 
     def watch_collection(self):
-        pass
+        toplevel = interface.Toplevel()
+        toplevel.geometry( "500x580+600+10" )
+        form1 = Navs1( toplevel, padx=0 )
+        form1.pack( expand=True, fill="both" )
+        form2 = Navs1( toplevel, padx=0 )
+        form2.pack( expand=True, fill="both" )
+
+        var1 = interface.StringVar()
+        var1.set( "Картины" )
+        var2 = interface.StringVar()
+        opt1 = ThemedMenu(form1, var1,"Картины", "Авторы")
+        opt1.pack()
+
+        authors = []
+        for k in self.collection.keys():
+            authors.append( self.collection[k]['author']['author_name'] )
+        authors = set(authors)
+        associations = {'Картины': self.collection.keys(),
+                        'Авторы': authors}
+        self.scrolledList = ScrolledList( associations[var1.get()], form1 )
+        self.scrolledList.pack()
+        self.text_message = ThemedOut( form2 )
+        self.text_message.config( text=var3 )
+        def callback(*args):
+            self.scrolledList.destroy()
+            self.scrolledList = ScrolledList(associations[var1.get()], form1)
+            self.scrolledList.pack()
+
+        def callback1(*args):
+            self.text_message.config(text = var3.get())
+
+
+        # var3.trace('w', callback1)
+
+
+        var1.trace('w', callback)
+
+
+
+        # label = []
+        # entry = []
+        #
+        # container1 = Container( form1 )
+        # container2 = Container( form2 )
+        # button1 = CommandButton( container1 )
+        # button1.config( text='Добавить', command=lambda: self.add_picture( entry, toplevel ) )
+        # button2 = CommandButton( container2 )
+        # button2.config( text='Отмена', command=lambda: toplevel.destroy() )
+        #
+        # for i in range( 11 ):
+        #     label.append( OutLabel( form1 ) )
+        #     entry.append( ThemedMessage( form2 ) )
+        #
+        # label[0].config( text="Название картины" )
+        # label[1].config( text="Жанр" )
+        # label[2].config( text="Цена" )
+        # label[3].config( text="Имя автора" )
+        # label[4].config( text="Годы жизни" )
+        # label[5].config( text="Основной стиль" )
+        # label[6].config( text="Рамка" )
+        # label[7].config( text="Цвет рамки" )
+        # label[8].config( text="Цена рамки" )
+        # label[9].config( text="Холст" )
+        # label[10].config( text="Краски" )
+        #
+        # for i in range( len( label ) ):
+        #     label[i].pack( in_=form1, side='top', padx=10, pady=5 )
+        #     entry[i].pack( in_=form2, side='top', padx=10, pady=5 )
+        # container1.pack( side='bottom', fill='x', expand=True )
+        # button1.pack( side='right', padx=0.5 )
+        # container2.pack( side='bottom', fill='x', expand=True )
+        # button2.pack( side='left' )
 
     def find_params(self):
         toplevel = interface.Toplevel()
@@ -158,21 +231,37 @@ class MainWidget():
             for k1,v1 in v.items():
                 if type( v1 ) is dict:
                     for k2, v2 in v1.items():
-                        if find[k1][k2] == v2:
+                        if find[k1][k2] == v2 and v2 != '':
                             found[k]+=1
 
                 else:
-                    if find[k1] == v1:
+                    if find[k1] == v1 and v1 != '':
                         found[k] +=1
         answer = {}
         for k,v in found.items():
             if v == max(found.values()):
                 answer = self.collection[k]
 
-        if max(found.values())== 0:
-            showinfo( "Поиск", "Совпадений не найдено!" )
+        if  max( found.values() ) != 0:
+            string = ""
+            flag = 0
+            for k,v in found.items():
+                if max(found.values()) == v:
+                    if flag == 0:
+                        string= k
+                    else:
+                        string+=', '
+                        string+=k
+                    flag +=1
+
+            if flag <2:
+                showinfo( "Поиск", "Наиболее подходит по описанию картина '{}' автора {}.".format( answer['name'],
+                                                                                               answer['author'][
+                                                                                                   'author_name'] ) )
+            else:
+                showinfo( "Поиск", "Наиболее подходят по описанию картины '{}'".format( string ))
         else:
-            showinfo( "Поиск", "Наиболее подходит по описанию картина '{}' автора {}.".format(answer['name'], answer['author']['author_name']) )
+            showinfo( "Поиск", "Совпадений не найдено!" )
 
 
 
