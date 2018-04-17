@@ -1,5 +1,5 @@
 import tkinter as interface
-var3=""
+var3=1
 
 class ThemedButton(interface.Button):
     def __init__(self, parent = None, **configs):
@@ -65,10 +65,13 @@ class ScrolledList(interface.Frame):
         self.config(bd = 1, width = 15, height = 15)
         self.makeWidgets(options)
 
+
     def handleList(self,event):
         self.index = self.listbox.curselection()
         self.label = self.listbox.get(self.index)
-        self.runCommand(self.label)
+        self.listbox.activate( self.index )
+        self.runCommand(self.index)
+
 
 
     def makeWidgets(self, options):
@@ -85,6 +88,7 @@ class ScrolledList(interface.Frame):
         list.config(selectmode = 'single')
         list.bind('<Double-1>', self.handleList)
         self.listbox = list
+
 
     def runCommand(self,selection):
         var3 = selection
